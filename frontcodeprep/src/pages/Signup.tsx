@@ -1,12 +1,10 @@
 import { type FormEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { GlitchBackground } from '@/components/GlitchBackground'
 
 const outlineButtonClassName =
   'w-full rounded-xl border border-white/18 bg-white/5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:border-emerald-400/35 hover:bg-emerald-500/10 hover:text-emerald-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/60'
 
 export function Signup() {
-  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -77,25 +75,6 @@ export function Signup() {
 
             <button type="submit" className={outlineButtonClassName}>
               Create Account
-            </button>
-
-            <div className="relative my-6" aria-hidden="true">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/10" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="rounded-md bg-white/10 px-3 py-0.5 text-[0.65rem] font-medium uppercase tracking-widest text-zinc-500 backdrop-blur-sm">
-                  or
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate('/home')}
-              className={outlineButtonClassName}
-            >
-              Get started
             </button>
           </form>
 
