@@ -15,3 +15,14 @@ export function apiUrl(path: string): string {
   const base = getApiBaseUrl()
   return base ? `${base}${normalized}` : normalized
 }
+
+/**
+ * When true, editor assist uses `POST /api/assist/stream` (SSE).
+ * Default false uses `POST /api/assist` (single JSON) — usually faster in dev because
+ * the Vite proxy can buffer event streams until the response finishes.
+ * Set `VITE_ASSIST_STREAM=true` to enable streaming; with the proxy, also try
+ * `VITE_API_URL=http://localhost:3001` so requests hit the API directly.
+ */
+export function assistUsesStreaming(): boolean {
+  return String(import.meta.env.VITE_ASSIST_STREAM ?? '').toLowerCase() === 'true'
+}

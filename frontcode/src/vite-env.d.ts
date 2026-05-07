@@ -2,6 +2,8 @@
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string | undefined
+  /** When `"true"`, editor assist streams tokens via SSE (needs direct API URL in dev if the Vite proxy buffers streams). */
+  readonly VITE_ASSIST_STREAM: string | undefined
 }
 
 interface ImportMeta {
