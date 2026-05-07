@@ -19,7 +19,7 @@ function backendLanguage(monacoId: string): CompileLanguage | null {
 
 export function CodeWorkspace({
   initialCode,
-  language = 'typescript',
+  language = 'javascript',
   className = '',
 }: CodeWorkspaceProps) {
   const [code, setCode] = useState(initialCode)

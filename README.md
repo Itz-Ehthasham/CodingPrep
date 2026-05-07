@@ -1,6 +1,6 @@
-# CodingPrep
+# Sathcode
 
-**CodingPrep** is an AI-powered coding preparation platform: a full-stack web application that helps people learn and improve programming skills through personalized, AI-driven guidance.
+**Sathcode** is an AI-powered coding preparation platform: a full-stack web application that helps people learn and improve programming skills through personalized, AI-driven guidance.
 
 ## Vision
 
@@ -28,9 +28,9 @@ This matches the **MERN** style (Mongo, Express, React, Node) with TypeScript on
 ## Repository layout
 
 ```text
-CodingPrep/
-├── frontcodeprep/    # React + Vite client
-├── backcodeprep/     # Express API
+Sathcode/
+├── frontcode/    # React + Vite client
+├── backcode/     # Express API
 └── README.md
 ```
 
@@ -39,22 +39,22 @@ CodingPrep/
 **API** (terminal 1):
 
 ```bash
-cd backcodeprep
+cd backcode
 npm install
 npm run dev
 ```
 
-Default API URL: `http://localhost:3001`. Copy `backcodeprep/.env.example` to `.env` and adjust `PORT` / `FRONTEND_ORIGIN` as needed.
+Default API URL: `http://localhost:3001`. Copy `backcode/.env.example` to `.env` and adjust `PORT` / `FRONTEND_ORIGIN` as needed.
 
 **Web app** (terminal 2):
 
 ```bash
-cd frontcodeprep
+cd frontcode
 npm install
 npm run dev
 ```
 
-The Vite dev server proxies `/api` to the backend. For production builds, set `VITE_API_URL` to your deployed API origin (see `frontcodeprep/.env.example`).
+The Vite dev server proxies `/api` to the backend. For production builds, set `VITE_API_URL` to your deployed API origin (see `frontcode/.env.example` if present).
 
 ## Environment notes
 
@@ -64,4 +64,4 @@ The Vite dev server proxies `/api` to the backend. For production builds, set `V
 
 ## License
 
-See individual packages for license fields (e.g. `backcodeprep/package.json`).
+See individual packages for license fields (e.g. `backcode/package.json`).

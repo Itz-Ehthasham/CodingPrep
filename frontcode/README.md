@@ -1,4 +1,4 @@
-# CodingPrep — web client
+# Sathcode — web client
 
 React + TypeScript + Vite + Tailwind. See the [repository root README](../README.md) for product context and how the app connects to the API.
 

@@ -19,7 +19,7 @@ export function PracticeHeader({ problem }: PracticeHeaderProps) {
           to="/"
           className="shrink-0 text-sm font-semibold tracking-tight text-zinc-100 transition hover:text-emerald-400"
         >
-          CodingPrep
+          Sathcode
         </Link>
         <span className="hidden h-4 w-px bg-zinc-700 sm:block" aria-hidden />
         <div className="flex min-w-0 items-center gap-2">

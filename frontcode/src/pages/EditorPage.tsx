@@ -7,55 +7,66 @@ import {
   type CompileLanguage,
 } from '@/services/api'
 
-const DEFAULT_CODE = `// Online editor — start coding here.
+type EditorLanguage = 'javascript' | 'python' | 'java'
+
+const languageOptions: {
+  id: EditorLanguage
+  label: string
+  monaco: string
+  api: CompileLanguage
+}[] = [
+  { id: 'javascript', label: 'JavaScript', monaco: 'javascript', api: 'javascript' },
+  { id: 'python', label: 'Python', monaco: 'python', api: 'python' },
+  { id: 'java', label: 'Java', monaco: 'java', api: 'java' },
+]
+
+const STARTER_CODE: Record<EditorLanguage, string> = {
+  javascript: `// Online editor - start coding here.
 // Run sends this file to the local API (Node).
 
 function greet(name) {
   return \`Hello, \${name}!\`
 }
 
-console.log(greet('CodingPrep'))
-`
+console.log(greet('Sathcode'))
+`,
+  python: `# Online editor - start coding here.
 
-type EditorLanguage = 'typescript' | 'javascript' | 'python' | 'java'
+def greet(name):
+    return f"Hello, {name}!"
 
-const languageOptions: {
-  id: EditorLanguage
-  label: string
-  monaco: string
-  api: CompileLanguage | null
-}[] = [
-  { id: 'typescript', label: 'TypeScript', monaco: 'typescript', api: null },
-  { id: 'javascript', label: 'JavaScript', monaco: 'javascript', api: 'javascript' },
-  { id: 'python', label: 'Python', monaco: 'python', api: 'python' },
-  { id: 'java', label: 'Java', monaco: 'java', api: 'java' },
-]
+print(greet("Sathcode"))
+`,
+  java: `// Online editor - start coding here.
+// Class must be named Main (required by the runner).
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(greet("Sathcode"));
+    }
+
+    static String greet(String name) {
+        return "Hello, " + name + "!";
+    }
+}
+`,
+}
 
 export function EditorPage() {
-  const [language, setLanguage] = useState<EditorLanguage>('typescript')
-  const [code, setCode] = useState(DEFAULT_CODE)
+  const [language, setLanguage] = useState<EditorLanguage>('javascript')
+  const [code, setCode] = useState(STARTER_CODE.javascript)
   const [output, setOutput] = useState<string>(
     'Click Run to execute on the backend (JavaScript, Python, Java). Start the API on port 3001 or set VITE_API_PROXY_TARGET.',
   )
   const [isRunning, setIsRunning] = useState(false)
 
   const monacoLang =
-    languageOptions.find((o) => o.id === language)?.monaco ?? 'typescript'
-
-  const languageLabel =
-    languageOptions.find((o) => o.id === language)?.label ?? 'TypeScript'
+    languageOptions.find((o) => o.id === language)?.monaco ?? 'javascript'
 
   const apiLanguage =
-    languageOptions.find((o) => o.id === language)?.api ?? null
+    languageOptions.find((o) => o.id === language)?.api ?? 'javascript'
 
   const handleRun = useCallback(async () => {
-    if (!apiLanguage) {
-      setOutput(
-        `${languageLabel} is not executed on the server. Switch to JavaScript, Python, or Java, or transpile locally.`,
-      )
-      return
-    }
-
     setIsRunning(true)
     try {
       const result = await compileCode({
@@ -76,7 +87,7 @@ export function EditorPage() {
     } finally {
       setIsRunning(false)
     }
-  }, [apiLanguage, code, languageLabel])
+  }, [apiLanguage, code])
 
   return (
     <div className="flex h-dvh max-h-dvh flex-col overflow-hidden bg-zinc-950 text-zinc-100">
@@ -86,7 +97,7 @@ export function EditorPage() {
             to="/"
             className="shrink-0 text-sm font-semibold tracking-tight text-zinc-100 transition hover:text-emerald-400"
           >
-            CodingPrep
+            Sathcode
           </Link>
           <span className="hidden h-4 w-px bg-zinc-700 sm:block" aria-hidden />
           <div className="flex items-center gap-1.5 text-zinc-500">
@@ -131,9 +142,11 @@ export function EditorPage() {
           <select
             id="editor-language"
             value={language}
-            onChange={(e) =>
-              setLanguage(e.target.value as EditorLanguage)
-            }
+            onChange={(e) => {
+              const next = e.target.value as EditorLanguage
+              setLanguage(next)
+              setCode(STARTER_CODE[next])
+            }}
             className="w-full cursor-pointer appearance-none rounded-lg border border-zinc-700 bg-zinc-900 py-2 pl-3 pr-9 text-sm font-medium text-zinc-200 shadow-sm outline-none transition hover:border-zinc-600 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
           >
             {languageOptions.map((opt) => (

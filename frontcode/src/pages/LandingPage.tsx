@@ -20,7 +20,7 @@ export function LandingPage() {
           to="/"
           className="text-sm font-semibold tracking-tight text-zinc-100 transition hover:text-emerald-400"
         >
-          CodingPrep
+          Sathcode
         </Link>
         <nav className="flex items-center gap-3 text-sm">
           <Link
@@ -51,7 +51,7 @@ export function LandingPage() {
         </div>
 
         <h1 className="text-balance text-4xl font-bold tracking-tight text-white sm:text-5xl sm:leading-[1.1]">
-          Welcome to CodingPrep
+          Welcome to Sathcode
         </h1>
 
         <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-zinc-400 sm:text-xl">

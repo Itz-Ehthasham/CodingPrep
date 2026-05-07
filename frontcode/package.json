@@ -1,8 +1,8 @@
 {
-  "name": "codingprep-frontend",
+  "name": "sathcode-frontend",
   "private": true,
   "version": "0.0.0",
-  "description": "CodingPrep web client — AI-powered coding preparation (React, TypeScript, Vite)",
+  "description": "Sathcode web client — AI-powered coding preparation (React, TypeScript, Vite)",
   "type": "module",
   "scripts": {
     "dev": "vite",

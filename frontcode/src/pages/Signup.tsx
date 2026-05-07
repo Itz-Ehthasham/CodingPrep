@@ -21,7 +21,7 @@ export function Signup() {
         <div className="w-full max-w-[400px] rounded-2xl border border-white/15 bg-white/10 p-8 shadow-[0_24px_80px_-12px_rgba(0,0,0,0.65)] backdrop-blur-xl">
           <div className="mb-8 text-center">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-400/90">
-              CodingPrep
+              Sathcode
             </p>
             <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white">
               Create account
