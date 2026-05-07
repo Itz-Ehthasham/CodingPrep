@@ -1,6 +1,7 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
+import assistRouter from "../routes/AssistRoute.js";
 import compileRouter from "../routes/CompileRoute.js";
 import submitRouter from "../routes/SubmitRoute.js";
 
@@ -23,6 +24,7 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/compile", compileRouter);
 app.use("/api/submit", submitRouter);
+app.use("/api/assist", assistRouter);
 
 app.listen(PORT, () => {
   console.log(`API listening on http://localhost:${PORT}`);

@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Editor from '@monaco-editor/react'
-import { ChevronDown, Loader2, Play, Terminal } from 'lucide-react'
+import { ChevronDown, Loader2, MessageCircle, Play, Terminal } from 'lucide-react'
+import { EditorAssistChat } from '@/components/editor/EditorAssistChat'
 import {
   compileCode,
   type CompileLanguage,
@@ -59,6 +60,7 @@ export function EditorPage() {
     'Click Run to execute on the backend (JavaScript, Python, Java). Start the API on port 3001 or set VITE_API_PROXY_TARGET.',
   )
   const [isRunning, setIsRunning] = useState(false)
+  const [assistOpen, setAssistOpen] = useState(false)
 
   const monacoLang =
     languageOptions.find((o) => o.id === language)?.monaco ?? 'javascript'
@@ -110,6 +112,18 @@ export function EditorPage() {
         <nav className="flex items-center gap-2">
           <button
             type="button"
+            onClick={() => setAssistOpen((o) => !o)}
+            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-sm transition ${
+              assistOpen
+                ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-300'
+                : 'border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-600'
+            }`}
+          >
+            <MessageCircle className="size-3.5 shrink-0" aria-hidden />
+            Assist
+          </button>
+          <button
+            type="button"
             onClick={handleRun}
             disabled={isRunning}
             className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-zinc-950 shadow-sm transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
@@ -127,73 +141,95 @@ export function EditorPage() {
           >
             Practice
           </Link>
-          <span className="hidden text-xs text-zinc-600 sm:inline">AI · soon</span>
         </nav>
       </header>
 
-      <div className="flex h-10 shrink-0 items-center gap-3 border-b border-zinc-800 bg-zinc-900/50 px-3">
-        <label
-          htmlFor="editor-language"
-          className="text-[0.65rem] font-semibold uppercase tracking-wider text-zinc-500"
-        >
-          Language
-        </label>
-        <div className="relative inline-block min-w-[11rem]">
-          <select
-            id="editor-language"
-            value={language}
-            onChange={(e) => {
-              const next = e.target.value as EditorLanguage
-              setLanguage(next)
-              setCode(STARTER_CODE[next])
-            }}
-            className="w-full cursor-pointer appearance-none rounded-lg border border-zinc-700 bg-zinc-900 py-2 pl-3 pr-9 text-sm font-medium text-zinc-200 shadow-sm outline-none transition hover:border-zinc-600 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
-          >
-            {languageOptions.map((opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
-            aria-hidden
-          />
-        </div>
-      </div>
+      <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <div className="flex h-10 shrink-0 items-center gap-3 border-b border-zinc-800 bg-zinc-900/50 px-3">
+            <label
+              htmlFor="editor-language"
+              className="text-[0.65rem] font-semibold uppercase tracking-wider text-zinc-500"
+            >
+              Language
+            </label>
+            <div className="relative inline-block min-w-[11rem]">
+              <select
+                id="editor-language"
+                value={language}
+                onChange={(e) => {
+                  const next = e.target.value as EditorLanguage
+                  setLanguage(next)
+                  setCode(STARTER_CODE[next])
+                }}
+                className="w-full cursor-pointer appearance-none rounded-lg border border-zinc-700 bg-zinc-900 py-2 pl-3 pr-9 text-sm font-medium text-zinc-200 shadow-sm outline-none transition hover:border-zinc-600 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
+              >
+                {languageOptions.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-500"
+                aria-hidden
+              />
+            </div>
+          </div>
 
-      <div className="relative min-h-0 flex-1">
-        <Editor
-          height="100%"
-          language={monacoLang}
-          theme="vs-dark"
-          value={code}
-          onChange={(value) => setCode(value ?? '')}
-          options={{
-            minimap: { enabled: true, scale: 0.85 },
-            fontSize: 14,
-            fontFamily:
-              '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
-            lineNumbers: 'on',
-            scrollBeyondLastLine: false,
-            padding: { top: 16, bottom: 16 },
-            tabSize: 2,
-            automaticLayout: true,
-            wordWrap: 'on',
-          }}
-        />
-      </div>
+          <div className="relative min-h-0 flex-1">
+            <Editor
+              height="100%"
+              language={monacoLang}
+              theme="vs-dark"
+              value={code}
+              onChange={(value) => setCode(value ?? '')}
+              options={{
+                minimap: { enabled: true, scale: 0.85 },
+                fontSize: 14,
+                fontFamily:
+                  '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
+                lineNumbers: 'on',
+                scrollBeyondLastLine: false,
+                padding: { top: 16, bottom: 16 },
+                tabSize: 2,
+                automaticLayout: true,
+                wordWrap: 'on',
+              }}
+            />
+          </div>
 
-      <footer className="flex min-h-[7rem] max-h-40 shrink-0 flex-col border-t border-zinc-800 bg-zinc-900/90">
-        <div className="flex items-center border-b border-zinc-800/80 px-3 py-1.5">
-          <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-zinc-500">
-            Output
-          </span>
+          <footer className="flex min-h-[7rem] max-h-40 shrink-0 flex-col border-t border-zinc-800 bg-zinc-900/90">
+            <div className="flex items-center border-b border-zinc-800/80 px-3 py-1.5">
+              <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-zinc-500">
+                Output
+              </span>
+            </div>
+            <pre className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap break-words px-3 py-2 font-mono text-xs leading-relaxed text-zinc-300">
+              {output}
+            </pre>
+          </footer>
         </div>
-        <pre className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap break-words px-3 py-2 font-mono text-xs leading-relaxed text-zinc-300">
-          {output}
-        </pre>
-      </footer>
+
+        {assistOpen ? (
+          <>
+            <button
+              type="button"
+              className="absolute inset-0 z-30 bg-black/55 md:hidden"
+              onClick={() => setAssistOpen(false)}
+              aria-label="Dismiss assistance"
+            />
+            <div className="absolute inset-y-0 right-0 z-40 flex h-full min-h-0 w-full max-w-md flex-col md:static md:z-0 md:h-full md:w-[min(28rem,42vw)] md:max-w-none">
+              <EditorAssistChat
+                code={code}
+                languageId={monacoLang}
+                onClose={() => setAssistOpen(false)}
+                className="min-h-0 flex-1"
+              />
+            </div>
+          </>
+        ) : null}
+      </div>
     </div>
   )
 }

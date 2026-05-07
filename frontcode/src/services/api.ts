@@ -69,3 +69,49 @@ export async function compileCode(params: {
 
   return data as CompileResult
 }
+
+export type AssistChatMessage = {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+/** Coding tutor chat (OpenAI-compatible API on the backend). */
+export async function assistChat(params: {
+  messages: AssistChatMessage[]
+  code?: string
+  language?: string
+}): Promise<{ message: string }> {
+  const url = apiUrl('/api/assist')
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: defaultJsonHeaders,
+    body: JSON.stringify({
+      messages: params.messages,
+      code: params.code,
+      language: params.language,
+    }),
+  })
+
+  const data = (await res.json().catch(() => ({}))) as
+    | { message?: string }
+    | { error?: string }
+
+  if (!res.ok) {
+    const msg =
+      typeof data === 'object' && data && 'error' in data && data.error
+        ? String(data.error)
+        : `POST ${url} failed: ${res.status}`
+    throw new Error(msg)
+  }
+
+  if (
+    typeof data === 'object' &&
+    data &&
+    'message' in data &&
+    typeof data.message === 'string'
+  ) {
+    return { message: data.message }
+  }
+
+  throw new Error('Invalid response from assist endpoint')
+}
