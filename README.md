@@ -1,6 +1,7 @@
 # Sathcode
 
 **Sathcode** is an AI-powered coding preparation platform: a full-stack web application that helps people learn and improve programming skills through personalized, AI-driven guidance.
+--Ehthasham Mustafa
 
 ## Vision
 
