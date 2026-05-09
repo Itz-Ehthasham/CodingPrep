@@ -1,4 +1,5 @@
 import { apiUrl } from '../config'
+import type { PracticeProblem } from '../data/sampleProblem'
 
 export const defaultJsonHeaders: HeadersInit = {
   Accept: 'application/json',
@@ -286,4 +287,72 @@ export async function assistChat(params: {
   }
 
   throw new Error('Invalid response from assist endpoint')
+}
+
+/* ---- LeetCode proxy (CodingPrep backend) -------------------------------- */
+
+export type LeetCodeListItem = {
+  title: string
+  titleSlug: string
+  difficulty: string
+  frontendId: string
+  paidOnly: boolean
+}
+
+export type LeetCodeListResponse = {
+  total: number
+  skip: number
+  limit: number
+  questions: LeetCodeListItem[]
+}
+
+export async function fetchLeetCodeQuestionList(params?: {
+  skip?: number
+  limit?: number
+}): Promise<LeetCodeListResponse> {
+  const search = new URLSearchParams()
+  if (params?.skip != null) search.set('skip', String(params.skip))
+  if (params?.limit != null) search.set('limit', String(params.limit))
+  const qs = search.toString()
+  const url = apiUrl(
+    qs ? `/api/leetcode/question-list?${qs}` : '/api/leetcode/question-list',
+  )
+  const res = await fetch(url)
+  const data = (await res.json().catch(() => ({}))) as LeetCodeListResponse & {
+    error?: string
+  }
+  if (!res.ok) {
+    throw new Error(
+      typeof data.error === 'string' ? data.error : `GET ${url} failed`,
+    )
+  }
+  return data as LeetCodeListResponse
+}
+
+export async function fetchLeetCodeProblem(
+  slug: string,
+  opts?: { editorLang?: string },
+): Promise<{ problem: PracticeProblem }> {
+  const search = new URLSearchParams()
+  if (opts?.editorLang)
+    search.set('lang', String(opts.editorLang).toLowerCase())
+  const qs = search.toString()
+  const encoded = encodeURIComponent(slug.trim().toLowerCase())
+  const url = apiUrl(
+    qs ? `/api/leetcode/problems/${encoded}?${qs}` : `/api/leetcode/problems/${encoded}`,
+  )
+  const res = await fetch(url)
+  const data = (await res.json().catch(() => ({}))) as {
+    problem?: PracticeProblem
+    error?: string
+  }
+  if (!res.ok) {
+    throw new Error(
+      typeof data.error === 'string'
+        ? data.error
+        : `GET practice problem failed (${res.status})`,
+    )
+  }
+  if (!data.problem) throw new Error('Malformed problem payload from API')
+  return { problem: data.problem }
 }

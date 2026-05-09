@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import assistRouter from "../routes/AssistRoute.js";
 import compileRouter from "../routes/CompileRoute.js";
+import createLeetCodeRouter from "../routes/LeetCodeRoute.js";
 import submitRouter from "../routes/SubmitRoute.js";
 
 const app = express();
@@ -25,6 +26,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/compile", compileRouter);
 app.use("/api/submit", submitRouter);
 app.use("/api/assist", assistRouter);
+app.use("/api/leetcode", createLeetCodeRouter(express));
 
 app.listen(PORT, () => {
   console.log(`API listening on http://localhost:${PORT}`);
