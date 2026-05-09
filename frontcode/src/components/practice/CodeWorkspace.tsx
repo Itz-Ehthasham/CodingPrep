@@ -7,6 +7,9 @@ type CodeWorkspaceProps = {
   initialCode: string
   language?: string
   className?: string
+  /** When both are set, the editor is controlled (parent owns code). */
+  code?: string
+  onCodeChange?: (code: string) => void
 }
 
 function backendLanguage(monacoId: string): CompileLanguage | null {
@@ -21,8 +24,13 @@ export function CodeWorkspace({
   initialCode,
   language = 'javascript',
   className = '',
+  code: controlledCode,
+  onCodeChange,
 }: CodeWorkspaceProps) {
-  const [code, setCode] = useState(initialCode)
+  const controlled =
+    controlledCode !== undefined && onCodeChange !== undefined
+
+  const [internalCode, setInternalCode] = useState(initialCode)
   const [stdin, setStdin] = useState('')
   const [activeTab, setActiveTab] = useState<'code' | 'testcase'>('code')
   const [consoleText, setConsoleText] = useState<string>(
@@ -31,8 +39,24 @@ export function CodeWorkspace({
   const [isRunning, setIsRunning] = useState(false)
 
   useEffect(() => {
-    setCode(initialCode)
-  }, [initialCode])
+    if (!controlled) {
+      setInternalCode(initialCode)
+    }
+  }, [initialCode, controlled])
+
+  const displayed = controlled ? (controlledCode ?? '') : internalCode
+
+  const handleCodeChange = useCallback(
+    (value: string | undefined) => {
+      const next = value ?? ''
+      if (controlled) {
+        onCodeChange(next)
+      } else {
+        setInternalCode(next)
+      }
+    },
+    [controlled, onCodeChange],
+  )
 
   const runLang = useMemo(() => backendLanguage(language), [language])
   const canRun = runLang !== null
@@ -48,7 +72,7 @@ export function CodeWorkspace({
     setIsRunning(true)
     try {
       const result = await compileCode({
-        code,
+        code: displayed,
         language: runLang,
         input: stdin,
       })
@@ -65,7 +89,7 @@ export function CodeWorkspace({
     } finally {
       setIsRunning(false)
     }
-  }, [code, runLang, stdin])
+  }, [displayed, runLang, stdin])
 
   return (
     <section
@@ -129,8 +153,8 @@ export function CodeWorkspace({
             height="100%"
             language={language}
             theme="vs-dark"
-            value={code}
-            onChange={(value) => setCode(value ?? '')}
+            value={displayed}
+            onChange={(value) => handleCodeChange(value)}
             options={{
               minimap: { enabled: false },
               fontSize: 14,

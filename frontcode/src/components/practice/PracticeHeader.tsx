@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
+import { MessageCircle } from 'lucide-react'
 import type { SampleProblem } from '@/data/sampleProblem'
 
 type PracticeHeaderProps = {
   problem: Pick<SampleProblem, 'title' | 'difficulty' | 'id'> | null
+  assistOpen: boolean
+  onAssistToggle: () => void
 }
 
 const difficultyStyles: Record<SampleProblem['difficulty'], string> = {
@@ -11,7 +14,11 @@ const difficultyStyles: Record<SampleProblem['difficulty'], string> = {
   Hard: 'bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/30',
 }
 
-export function PracticeHeader({ problem }: PracticeHeaderProps) {
+export function PracticeHeader({
+  problem,
+  assistOpen,
+  onAssistToggle,
+}: PracticeHeaderProps) {
   return (
     <header className="flex h-12 shrink-0 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4">
       <div className="flex min-w-0 items-center gap-3">
@@ -36,9 +43,18 @@ export function PracticeHeader({ problem }: PracticeHeaderProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <span className="hidden text-xs text-zinc-500 md:inline">
-          AI hints — soon
-        </span>
+        <button
+          type="button"
+          onClick={onAssistToggle}
+          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-sm transition ${
+            assistOpen
+              ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-300'
+              : 'border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-zinc-600'
+          }`}
+        >
+          <MessageCircle className="size-3.5 shrink-0" aria-hidden />
+          Assist
+        </button>
         <button
           type="button"
           disabled

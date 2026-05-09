@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import { EditorAssistChat } from '@/components/editor/EditorAssistChat'
 import { CodeWorkspace } from '@/components/practice/CodeWorkspace'
 import { PracticeHeader } from '@/components/practice/PracticeHeader'
 import { ProblemPanel } from '@/components/practice/ProblemPanel'
@@ -106,6 +107,8 @@ export function PracticePage() {
   const [problem, setProblem] = useState<PracticeProblem | null>(null)
   const [problemLoading, setProblemLoading] = useState(false)
   const [problemError, setProblemError] = useState<string | null>(null)
+  const [assistOpen, setAssistOpen] = useState(false)
+  const [workspaceCode, setWorkspaceCode] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -205,7 +208,13 @@ export function PracticePage() {
 
   const workspaceLang = problem?.editorLang ?? 'javascript'
   const starter =
-    problem?.starterCode ?? '// Pick a question from the left to load starter code.'
+    problem?.starterCode ??
+    '// Pick a question from the left to load starter code.'
+
+  useEffect(() => {
+    setWorkspaceCode(starter)
+  }, [starter])
+
   const headerProblem = problem && slug
     ? {
         id: problem.titleSlug ?? problem.id,
@@ -218,7 +227,11 @@ export function PracticePage() {
 
   return (
     <div className="flex h-dvh max-h-dvh flex-col overflow-hidden bg-zinc-950 text-zinc-100">
-      <PracticeHeader problem={headerProblem} />
+      <PracticeHeader
+        problem={headerProblem}
+        assistOpen={assistOpen}
+        onAssistToggle={() => setAssistOpen((o) => !o)}
+      />
 
       <div className="flex min-h-0 flex-1 flex-col md:flex-row">
         {/* Sidebar: problem bank */}
@@ -309,7 +322,7 @@ export function PracticePage() {
         </aside>
 
         {/* Main workspace */}
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col lg:flex-row">
+        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden lg:flex-row">
           <ProblemPanelSlot
             problem={problem}
             loading={problemLoading}
@@ -341,12 +354,32 @@ export function PracticePage() {
               </details>
             </div>
             <CodeWorkspace
-              key={slug ?? 'none'}
               initialCode={starter}
+              code={workspaceCode}
+              onCodeChange={setWorkspaceCode}
               language={workspaceLang}
               className="h-full min-h-0 flex-1"
             />
           </div>
+
+          {assistOpen ? (
+            <>
+              <button
+                type="button"
+                className="absolute inset-0 z-30 bg-black/55 md:hidden"
+                onClick={() => setAssistOpen(false)}
+                aria-label="Dismiss assistance"
+              />
+              <div className="absolute inset-y-0 right-0 z-40 flex h-full min-h-0 w-full max-w-md flex-col border-l border-zinc-800 md:static md:z-0 md:h-full md:w-[min(28rem,42vw)] md:max-w-none">
+                <EditorAssistChat
+                  code={workspaceCode}
+                  languageId={workspaceLang}
+                  onClose={() => setAssistOpen(false)}
+                  className="min-h-0 flex-1 bg-zinc-950"
+                />
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
     </div>
