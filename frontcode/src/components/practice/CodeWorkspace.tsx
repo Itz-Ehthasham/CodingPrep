@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Editor from '@monaco-editor/react'
 import { Loader2, Play } from 'lucide-react'
 import { compileCode, type CompileLanguage } from '@/services/api'
@@ -29,6 +29,10 @@ export function CodeWorkspace({
     '// Output appears here after you run.',
   )
   const [isRunning, setIsRunning] = useState(false)
+
+  useEffect(() => {
+    setCode(initialCode)
+  }, [initialCode])
 
   const runLang = useMemo(() => backendLanguage(language), [language])
   const canRun = runLang !== null

@@ -19,6 +19,14 @@ function App() {
         }
       />
       <Route
+        path="/practice/:slug"
+        element={
+          <Layout>
+            <PracticePage />
+          </Layout>
+        }
+      />
+      <Route
         path="/practice"
         element={
           <Layout>

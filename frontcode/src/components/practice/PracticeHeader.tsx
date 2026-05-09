@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import type { SampleProblem } from '@/data/sampleProblem'
 
 type PracticeHeaderProps = {
-  problem: Pick<SampleProblem, 'title' | 'difficulty' | 'id'>
+  problem: Pick<SampleProblem, 'title' | 'difficulty' | 'id'> | null
 }
 
 const difficultyStyles: Record<SampleProblem['difficulty'], string> = {
@@ -24,13 +24,15 @@ export function PracticeHeader({ problem }: PracticeHeaderProps) {
         <span className="hidden h-4 w-px bg-zinc-700 sm:block" aria-hidden />
         <div className="flex min-w-0 items-center gap-2">
           <span className="truncate text-sm font-medium text-zinc-200">
-            {problem.title}
+            {problem?.title ?? 'Practice · Pick a problem'}
           </span>
-          <span
-            className={`shrink-0 rounded-md px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide ${difficultyStyles[problem.difficulty]}`}
-          >
-            {problem.difficulty}
-          </span>
+          {problem ? (
+            <span
+              className={`shrink-0 rounded-md px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide ${difficultyStyles[problem.difficulty]}`}
+            >
+              {problem.difficulty}
+            </span>
+          ) : null}
         </div>
       </div>
       <div className="flex items-center gap-2">

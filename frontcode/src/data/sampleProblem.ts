@@ -14,6 +14,14 @@ export type SampleProblem = {
   starterCode: string
 }
 
+/** Loaded from `/api/leetcode/problems/:slug` (+ optional Monaco language). */
+export type PracticeProblem = SampleProblem & {
+  editorLang?: string
+  titleSlug?: string
+  frontendId?: string
+  source?: string
+}
+
 export const SAMPLE_PROBLEM: SampleProblem = {
   id: 'two-sum',
   title: 'Two Sum',
